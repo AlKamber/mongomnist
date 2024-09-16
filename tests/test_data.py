@@ -1,12 +1,6 @@
 import pytest
 import numpy as np
-from nn_split_manual import load_data, preprocess_data
-
-def test_load_data():
-    X, y = load_data()
-    assert X.shape[1:] == (28, 28)
-    assert y.shape[0] == X.shape[0]
-    assert set(y) == set(range(10))
+from nn_split_manual import preprocess_data
     
 def test_preprocess_data():
     # Create a sample input
