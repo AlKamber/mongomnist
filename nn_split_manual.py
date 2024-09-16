@@ -13,6 +13,28 @@ client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = client["mnist_database_no_split"]
 collection = db["images"]
 
+def create_model():
+    model = keras.Sequential(
+        [
+            keras.Input(shape=input_shape),
+            layers.Conv2D(32, kernel_size=(3, 3), activation="relu"),
+            layers.MaxPooling2D(pool_size=(2, 2)),
+            layers.Conv2D(64, kernel_size=(3, 3), activation="relu"),
+            layers.MaxPooling2D(pool_size=(2, 2)),
+            layers.Flatten(),
+            layers.Dropout(0.5),    
+            layers.Dense(num_classes, activation="softmax"),
+        ]
+    )
+    return model
+
+# function to preprocess the data
+def preprocess_data(x):
+    x = x.astype("float32") / 255
+    mean = np.mean(x)
+    std = np.std(x)
+    return (x - mean) / std
+
 def plot_label_distribution(y_train, y_val, y_test):
     labels = range(10)  # 0 to 9
     train_counts = [np.sum(y_train == i) for i in labels]
