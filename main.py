@@ -1,4 +1,3 @@
-import pymongo
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
@@ -7,10 +6,19 @@ from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout
 from keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical
+from pymongo.mongo_client import MongoClient
+from urllib.parse import quote_plus
 
 # function to get the mongo client
 def get_mongo_client():
-    return pymongo.MongoClient("mongodb://localhost:27017/")
+    username = quote_plus('Aloysius')
+    password = quote_plus('AndricHemingway99!')
+    
+    # Connect to MongoDB
+    uri = "mongodb+srv://"+username+":"+password+"@mnistwithmongodb.fromm.mongodb.net/?retryWrites=true&w=majority&appName=MNISTwithMongoDB"
+    client = MongoClient(uri)
+    return client
+
 
 # function to get the data from mongoDB
 def fetch_data(client=None):

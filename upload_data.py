@@ -1,10 +1,19 @@
 import pymongo
 import numpy as np
-from keras.datasets import mnist
+from tensorflow import keras
+from tensorflow.keras.datasets import mnist
+from pymongo.mongo_client import MongoClient
+from urllib.parse import quote_plus
 
 def upload():
+    username = quote_plus('Aloysius')
+    password = quote_plus('AndricHemingway99!')
+    
     # Connect to MongoDB
-    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    uri = "mongodb+srv://"+username+":"+password+"@mnistwithmongodb.fromm.mongodb.net/?retryWrites=true&w=majority&appName=MNISTwithMongoDB"
+
+    # Create a new client and connect to the server
+    client = MongoClient(uri)
     db = client["mnist"]
     collection = db["images"]
 
