@@ -24,6 +24,7 @@ warnings.filterwarnings('ignore', category=UserWarning, module='keras')
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
+
 def get_mongo_client():
     username = quote_plus(os.getenv('MONGO_USERNAME'))
     password = quote_plus(os.getenv('MONGO_PASSWORD'))
@@ -36,11 +37,9 @@ def get_mongo_client():
 
 
 # function to get the data from mongoDB
-def fetch_data(client=None):
+def fetch_data(client):
     counter = 0
     print("Fetching data...")
-    if client is None:
-        client = get_mongo_client()
     db = client.mnist
     collection = db.images
     X = []
@@ -121,10 +120,8 @@ def plot_label_distribution(y_train, y_val, y_test):
 #%%
 # main execution
 if __name__ == "__main__":
-    
-    X,y = fetch_data()
-    
-    print("Data type of images:", X.dtype)
+    client = get_mongo_client()
+    X,y = fetch_data(client)
     
     #%%
     display_sample_images(X, y)
