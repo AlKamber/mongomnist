@@ -4,10 +4,16 @@ from tensorflow import keras
 from tensorflow.keras.datasets import mnist
 from pymongo.mongo_client import MongoClient
 from urllib.parse import quote_plus
+from dotenv import load_dotenv
+import os
+
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
 
 def upload():
-    username = quote_plus('Aloysius')
-    password = quote_plus('AndricHemingway99!')
+    username = quote_plus(os.getenv('MONGO_USERNAME'))
+    password = quote_plus(os.getenv('MONGO_PASSWORD'))
     
     # Connect to MongoDB
     uri = "mongodb+srv://"+username+":"+password+"@mnistwithmongodb.fromm.mongodb.net/?retryWrites=true&w=majority&appName=MNISTwithMongoDB"
