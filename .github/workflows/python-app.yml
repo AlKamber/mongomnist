@@ -27,5 +27,8 @@ jobs:
           pytest tests/test_datafetch.py
 
       - name: Run main script
+        env:
+          MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
+          MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
         run: |
           python main.py
