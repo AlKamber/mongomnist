@@ -7,9 +7,6 @@ from dotenv import load_dotenv
 from urllib.parse import quote_plus
 
 def test_real_mongo_client():
-    # Load environment variables
-    dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env') 
-    load_dotenv(dotenv_path)
     # Get the real MongoDB client
     client = get_mongo_client()
     
