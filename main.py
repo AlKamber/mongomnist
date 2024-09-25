@@ -31,7 +31,6 @@ load_dotenv(dotenv_path)
 def get_mongo_client():
     username = quote_plus(os.getenv('MONGO_USERNAME'))
     password = quote_plus(os.getenv('MONGO_PASSWORD'))
-    print(username, password)
     
     # Connect to MongoDB
     uri = "mongodb+srv://"+username+":"+password+"@mnistwithmongodb.fromm.mongodb.net/?retryWrites=true&w=majority&appName=MNISTwithMongoDB"
