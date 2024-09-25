@@ -1,10 +1,7 @@
 #%%
 import os
 
-# Suppress TensorFlow logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
-# Disable oneDNN custom operations
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 import numpy as np
