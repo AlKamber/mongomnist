@@ -6,9 +6,9 @@ from main import fetch_data, get_mongo_client
 from dotenv import load_dotenv
 def test_real_mongo_client():
     # Load environment variables
-    
-    dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+    dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env') 
     load_dotenv(dotenv_path)
+    
 
     # Get the real MongoDB client
     client = get_mongo_client()
