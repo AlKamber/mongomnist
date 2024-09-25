@@ -26,7 +26,6 @@ jobs:
         run: |
           pytest tests/test_datafetch.py
 
-    # Commenting out the main script run as it requires MongoDB
-    # - name: Run main script
-    #   run: |
-    #     python main.py
+      - name: Run main script
+        run: |
+          python main.py
