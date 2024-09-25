@@ -1,10 +1,11 @@
 import os
+import sys
 import pytest
 from unittest.mock import Mock, patch
 import numpy as np
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from main import fetch_data, get_mongo_client
-from dotenv import load_dotenv
-from urllib.parse import quote_plus
 
 def test_real_mongo_client():
     # Get the real MongoDB client

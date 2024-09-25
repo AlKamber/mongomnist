@@ -24,15 +24,14 @@ import matplotlib.pyplot as plt
 
 # Suppress specific Keras warnings
 warnings.filterwarnings('ignore', category=UserWarning, module='keras')
-
+# Try to load .env file
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path)
 
 def get_mongo_client():
-    # Try to load .env file
-    dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-    load_dotenv(dotenv_path)
-    
     username = quote_plus(os.getenv('MONGO_USERNAME'))
     password = quote_plus(os.getenv('MONGO_PASSWORD'))
+    print(username, password)
     
     # Connect to MongoDB
     uri = "mongodb+srv://"+username+":"+password+"@mnistwithmongodb.fromm.mongodb.net/?retryWrites=true&w=majority&appName=MNISTwithMongoDB"
