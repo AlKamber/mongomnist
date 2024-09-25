@@ -26,7 +26,7 @@ def test_real_mongo_client():
         assert len(y) == 70000, "y should have 70000 samples"
         assert len(unique_labels) == 10, "Expected 10 unique classes (digits 0-9)."
         assert np.all((y >= 0) & (y <= 9)), "Labels should be in the range 0-9."
-        assert X.dtype == np.uint8, "Image data type should be uint8."
+        assert X.dtype == np.int32, "Image data type should be int32."
         assert np.all((X >= 0) & (X <= 255)), "Pixel values should be in the range 0-255."
         assert not np.any(np.isnan(X)), "There should be no missing values in the images."
         assert not np.any(np.isnan(y)), "There should be no missing values in the labels."

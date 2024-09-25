@@ -128,6 +128,8 @@ if __name__ == "__main__":
     
     X,y = fetch_data()
     
+    print("Data type of images:", X.dtype)
+    
     #%%
     display_sample_images(X, y)
 
