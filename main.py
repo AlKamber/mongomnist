@@ -1,3 +1,5 @@
+#%%
+
 import os
 
 # Suppress TensorFlow logs
@@ -7,6 +9,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 import numpy as np
+from dotenv import load_dotenv
 import tensorflow as tf
 import warnings
 from tensorflow import keras
@@ -17,14 +20,19 @@ from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical
 from pymongo.mongo_client import MongoClient
 from urllib.parse import quote_plus
+import matplotlib.pyplot as plt
 
 # Suppress specific Keras warnings
 warnings.filterwarnings('ignore', category=UserWarning, module='keras')
 
+# Try to load .env file
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
 
 def get_mongo_client():
-    username = quote_plus('Aloysius')
-    password = quote_plus('msuOvojkA2VtCiL2')
+    username = quote_plus(os.getenv('MONGO_USERNAME'))
+    password = quote_plus(os.getenv('MONGO_PASSWORD'))
     
     # Connect to MongoDB
     uri = "mongodb+srv://"+username+":"+password+"@mnistwithmongodb.fromm.mongodb.net/?retryWrites=true&w=majority&appName=MNISTwithMongoDB"
@@ -72,9 +80,58 @@ def create_model(input_shape, num_classes):
     
     return model
 
+def display_sample_images(X, y, num_samples=5):
+    fig, axes = plt.subplots(1, num_samples, figsize=(num_samples*3, 3))
+    for i in range(num_samples):
+        idx = np.random.randint(0, len(X))
+        axes[i].imshow(X[idx].reshape(28, 28), cmap='gray')
+        axes[i].set_title(f"Label: {y[idx]}")
+        axes[i].axis('off')
+    plt.tight_layout()
+    plt.show()
+    
+def print_data_info(X, y, dataset_name):
+    print(f"{dataset_name} set shape: {X.shape}")
+    print(f"{dataset_name} set label shape: {y.shape}")
+    print(f"Number of classes: {len(np.unique(y))}")
+    print(f"Sample labels: {y[:10]}")
+    print(f"Min pixel value: {X.min()}, Max pixel value: {X.max()}")
+    
+def preprocess_data(X, y):
+    """Preprocess the data."""
+    X = X.reshape(-1, 28, 28, 1) / 255.0
+    y = to_categorical(y)
+    return X, y
+
+def plot_label_distribution(y_train, y_val, y_test):
+    """
+    Plot the distribution of labels in training, validation, and test sets.
+    """
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
+    
+    def plot_distribution(y, ax, title):
+        unique, counts = np.unique(y, return_counts=True)
+        ax.bar(unique, counts)
+        ax.set_title(title)
+        ax.set_xlabel('Label')
+        ax.set_ylabel('Count')
+        ax.set_xticks(unique)
+    
+    plot_distribution(y_train, ax1, 'Training Set')
+    plot_distribution(y_val, ax2, 'Validation Set')
+    plot_distribution(y_test, ax3, 'Test Set')
+    
+    plt.tight_layout()
+    plt.show()
+
+#%%
 # main execution
 if __name__ == "__main__":
+    
     X,y = fetch_data()
+    
+    #%%
+    display_sample_images(X, y)
 
     # Split data into train+val and test sets
     X_train_val, X_test, y_train_val, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -82,18 +139,24 @@ if __name__ == "__main__":
     # Split train+val into train and validation sets
     X_train, X_val, y_train, y_val = train_test_split(X_train_val, y_train_val, test_size=0.2, random_state=42)
     
-    X_train = X_train.reshape(-1, 28, 28, 1) / 255.0
-    X_val = X_val.reshape(-1, 28, 28, 1) / 255.0
-    X_test = X_test.reshape(-1, 28, 28, 1) / 255.0
+    #%%
+    plot_label_distribution(y_train, y_val, y_test)
     
-    y_train = to_categorical(y_train)
-    y_val = to_categorical(y_val)
-    y_test = to_categorical(y_test)
+    #%%
+    X_train, y_train = preprocess_data(X_train, y_train)
+    X_val, y_val = preprocess_data(X_val, y_val)
+    X_test, y_test = preprocess_data(X_test, y_test)
     
+    #%%
     model = create_model(input_shape=(28,28,1), num_classes=10)
     print("Creating model...")
     model.fit(X_train,y_train, epochs=10, batch_size=64, verbose=2, validation_data=(X_val, y_val))
     
+    #%%
+    # Save the model
+    model.save("mnist_model.keras")
+    
+    #%%
     test_loss, test_accuracy = model.evaluate(X_test, y_test, verbose=2)
     print(f"Test accuracy: {test_accuracy}")
     print(f"Test loss: {test_loss}")
