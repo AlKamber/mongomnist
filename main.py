@@ -18,18 +18,15 @@ from pymongo.mongo_client import MongoClient
 from urllib.parse import quote_plus
 import matplotlib.pyplot as plt
 
-# Suppress specific Keras warnings
 warnings.filterwarnings('ignore', category=UserWarning, module='keras')
-# Try to load .env file
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
-
+# function to get the mongoDB client
 def get_mongo_client():
     username = quote_plus(os.getenv('MONGO_USERNAME'))
     password = quote_plus(os.getenv('MONGO_PASSWORD'))
     
-    # Connect to MongoDB
     uri = "mongodb+srv://"+username+":"+password+"@mnistwithmongodb.fromm.mongodb.net/?retryWrites=true&w=majority&appName=MNISTwithMongoDB"
 
     client = MongoClient(uri)
@@ -57,7 +54,7 @@ def fetch_data(client):
 def create_model(input_shape, num_classes):
     model = Sequential([
         Input(shape=input_shape),
-        Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=input_shape),
+        Conv2D(32, kernel_size=(3, 3), activation='relu'),
         MaxPooling2D(pool_size=(2, 2)),
         Conv2D(64, kernel_size=(3, 3), activation='relu'),
         MaxPooling2D(pool_size=(2, 2)),
