@@ -79,24 +79,15 @@ def display_sample_images(X, y, num_samples=5):
         axes[i].axis('off')
     plt.tight_layout()
     plt.show()
-    
-def print_data_info(X, y, dataset_name):
-    print(f"{dataset_name} set shape: {X.shape}")
-    print(f"{dataset_name} set label shape: {y.shape}")
-    print(f"Number of classes: {len(np.unique(y))}")
-    print(f"Sample labels: {y[:10]}")
-    print(f"Min pixel value: {X.min()}, Max pixel value: {X.max()}")
-    
+   
+# function to preprocess the data
 def preprocess_data(X, y):
-    """Preprocess the data."""
     X = X.reshape(-1, 28, 28, 1) / 255.0
     y = to_categorical(y)
     return X, y
 
+# function to plot the label distribution
 def plot_label_distribution(y_train, y_val, y_test):
-    """
-    Plot the distribution of labels in training, validation, and test sets.
-    """
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
     
     def plot_distribution(y, ax, title):
@@ -115,7 +106,6 @@ def plot_label_distribution(y_train, y_val, y_test):
     plt.show()
 
 #%%
-# main execution
 if __name__ == "__main__":
     client = get_mongo_client()
     X,y = fetch_data(client)
@@ -143,7 +133,6 @@ if __name__ == "__main__":
     model.fit(X_train,y_train, epochs=10, batch_size=64, verbose=2, validation_data=(X_val, y_val))
     
     #%%
-    # Save the model
     model.save("mnist_model.keras")
     
     #%%
